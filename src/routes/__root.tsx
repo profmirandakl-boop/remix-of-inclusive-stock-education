@@ -12,6 +12,7 @@ import appCss from "../styles.css?url";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { LibrasWidget } from "@/components/LibrasWidget";
+import { Narrator } from "@/components/Narrator";
 
 function NotFoundComponent() {
   return (
@@ -126,6 +127,7 @@ function RootComponent() {
         </main>
         <SiteFooter />
         <LibrasWidget />
+        <Narrator />
       </div>
     </QueryClientProvider>
   );
