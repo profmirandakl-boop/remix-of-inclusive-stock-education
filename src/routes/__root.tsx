@@ -127,6 +127,7 @@ function RootComponent() {
         </main>
         <SiteFooter />
         <LibrasWidget />
+        <Narrator />
       </div>
     </QueryClientProvider>
   );
