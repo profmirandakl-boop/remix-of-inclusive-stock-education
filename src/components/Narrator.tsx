@@ -12,7 +12,7 @@ const getPreferredPortugueseVoice = (voices: SpeechSynthesisVoice[]) => {
 
   return (
     normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("google"))?.voice ||
-      normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("brasil"))?.voice ||
+    normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("brasil"))?.voice ||
     normalized.find(({ lang }) => lang === "pt-br")?.voice ||
     normalized.find(({ lang }) => lang.startsWith("pt-"))?.voice ||
     normalized.find(({ lang }) => lang.startsWith("pt"))?.voice ||
@@ -77,7 +77,7 @@ export function Narrator() {
       setTimeout(() => {
         speak(
           "Atenção. O narrador automático irá iniciar após a contagem de 10 segundos. " +
-            "Toque em 'Ouvir agora' para começar imediatamente, ou em 'Continuar navegando sem narrador' para dispensar."
+            "Toque em 'Ouvir agora' para começar imediatamente, ou em 'Continuar navegando sem narrador' para dispensar.",
         );
       }, 250);
     }
@@ -199,8 +199,7 @@ export function Narrator() {
                 segundos
               </h2>
               <p id="narrator-prompt-desc" className="mt-1 text-sm text-muted-foreground">
-                Voltado para pessoas com deficiência visual. Você pode iniciar agora ou continuar sem
-                narração.
+                Voltado para pessoas com deficiência visual. Você pode iniciar agora ou continuar sem narração.
               </p>
             </div>
             <button
