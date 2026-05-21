@@ -3,6 +3,23 @@ import { Volume2, Pause, Play, Square, X } from "lucide-react";
 
 type Status = "idle" | "playing" | "paused";
 
+const getPreferredPortugueseVoice = (voices: SpeechSynthesisVoice[]) => {
+  const normalized = voices.map((voice) => ({
+    voice,
+    lang: voice.lang?.toLowerCase() || "",
+    name: voice.name?.toLowerCase() || "",
+  }));
+
+  return (
+    normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("google"))?.voice ||
+    normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("brasil"))?.voice ||
+    normalized.find(({ lang }) => lang === "pt-br")?.voice ||
+    normalized.find(({ lang }) => lang.startsWith("pt-"))?.voice ||
+    normalized.find(({ lang }) => lang.startsWith("pt"))?.voice ||
+    null
+  );
+};
+
 export function Narrator() {
   const [mounted, setMounted] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
@@ -21,21 +38,18 @@ export function Narrator() {
     }
     const loadVoices = () => {
       const voices = window.speechSynthesis.getVoices();
-      const pt =
-        voices.find((v) => v.lang?.toLowerCase().startsWith("pt-br")) ||
-        voices.find((v) => v.lang?.toLowerCase().startsWith("pt")) ||
-        voices[0] ||
-        null;
-      setVoice(pt);
+      setVoice(getPreferredPortugueseVoice(voices));
     };
     loadVoices();
     window.speechSynthesis.onvoiceschanged = loadVoices;
+    const voiceRetry = window.setTimeout(loadVoices, 700);
 
     // Show prompt once per session
     const dismissed = sessionStorage.getItem("narrator-prompt-dismissed");
     if (!dismissed) setShowPrompt(true);
 
     return () => {
+      window.clearTimeout(voiceRetry);
       window.speechSynthesis.cancel();
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
@@ -47,7 +61,7 @@ export function Narrator() {
     const synth = window.speechSynthesis;
     const utter = new SpeechSynthesisUtterance(text);
     if (voice) utter.voice = voice;
-    utter.lang = voice?.lang || "pt-BR";
+    utter.lang = "pt-BR";
     utter.rate = 1;
     utter.pitch = 1;
     synth.speak(utter);
@@ -119,7 +133,7 @@ export function Narrator() {
     if (!text) return;
     const utter = new SpeechSynthesisUtterance(text);
     if (voice) utter.voice = voice;
-    utter.lang = voice?.lang || "pt-BR";
+    utter.lang = "pt-BR";
     utter.rate = 1;
     utter.pitch = 1;
     utter.onend = () => setStatus("idle");
