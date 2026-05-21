@@ -12,7 +12,7 @@ const getPreferredPortugueseVoice = (voices: SpeechSynthesisVoice[]) => {
 
   return (
     normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("google"))?.voice ||
-    normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("brasil"))?.voice ||
+      normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("brasil"))?.voice ||
     normalized.find(({ lang }) => lang === "pt-br")?.voice ||
     normalized.find(({ lang }) => lang.startsWith("pt-"))?.voice ||
     normalized.find(({ lang }) => lang.startsWith("pt"))?.voice ||
@@ -188,7 +188,10 @@ export function Narrator() {
               <Volume2 className="h-6 w-6" aria-hidden="true" />
             </div>
             <div className="flex-1">
-              <h2 id="narrator-prompt-title" className="text-lg font-bold uppercase text-foreground">
+              <h2
+                id="narrator-prompt-title"
+                className="text-lg font-bold uppercase text-foreground"
+              >
                 O narrador automático irá iniciar após a contagem de{" "}
                 <span aria-live="polite" className="text-accent">
                   {countdown}
@@ -196,7 +199,8 @@ export function Narrator() {
                 segundos
               </h2>
               <p id="narrator-prompt-desc" className="mt-1 text-sm text-muted-foreground">
-                Voltado para pessoas com deficiência visual. Você pode iniciar agora ou continuar sem narração.
+                Voltado para pessoas com deficiência visual. Você pode iniciar agora ou continuar sem
+                narração.
               </p>
             </div>
             <button
