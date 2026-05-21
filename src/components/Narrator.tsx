@@ -199,8 +199,8 @@ export function Narrator() {
                 segundos
               </h2>
               <p id="narrator-prompt-desc" className="mt-1 text-sm text-muted-foreground">
-                Voltado para pessoas com deficiência visual. Você pode iniciar agora ou continuar sem
-                narração.
+                Voltado para pessoas com deficiência visual. Você pode iniciar agora ou continuar
+                sem narração.
               </p>
             </div>
             <button
