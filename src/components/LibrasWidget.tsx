@@ -16,7 +16,7 @@ const VLIBRAS_MARKUP =
   '<div vw="true" class="enabled">' +
   '<div vw-access-button="true" class="active"></div>' +
   '<div vw-plugin-wrapper="true"><div class="vw-plugin-top-wrapper"></div></div>' +
-  '</div>';
+  "</div>";
 
 function ensureVlibrasMarkup() {
   let wrapper = document.getElementById("vlibras-root");
@@ -28,7 +28,10 @@ function ensureVlibrasMarkup() {
     wrapper.innerHTML = VLIBRAS_MARKUP;
     document.body.appendChild(wrapper);
     rebuilt = true;
-  } else if (!wrapper.querySelector("[vw-access-button]") || !wrapper.querySelector("[vw-plugin-wrapper]")) {
+  } else if (
+    !wrapper.querySelector("[vw-access-button]") ||
+    !wrapper.querySelector("[vw-plugin-wrapper]")
+  ) {
     wrapper.innerHTML = VLIBRAS_MARKUP;
     rebuilt = true;
   }
