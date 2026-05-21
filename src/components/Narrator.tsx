@@ -41,18 +41,47 @@ export function Narrator() {
     };
   }, []);
 
-  // Countdown effect
+  // Speak helper for arbitrary text (used for the countdown announcement)
+  const speak = (text: string) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    const synth = window.speechSynthesis;
+    const utter = new SpeechSynthesisUtterance(text);
+    if (voice) utter.voice = voice;
+    utter.lang = voice?.lang || "pt-BR";
+    utter.rate = 1;
+    utter.pitch = 1;
+    synth.speak(utter);
+  };
+
+  // Countdown effect + narrate the warning message
   useEffect(() => {
     if (!showPrompt) return;
     setCountdown(10);
+
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      window.speechSynthesis.cancel();
+      setTimeout(() => {
+        speak(
+          "Atenção. O narrador automático irá iniciar após a contagem de 10 segundos. " +
+            "Toque em 'Ouvir agora' para começar imediatamente, ou em 'Continuar navegando sem narrador' para dispensar."
+        );
+      }, 250);
+    }
+
     timerRef.current = window.setInterval(() => {
       setCountdown((c) => {
         if (c <= 1) {
           if (timerRef.current) window.clearInterval(timerRef.current);
           setShowPrompt(false);
           sessionStorage.setItem("narrator-prompt-dismissed", "1");
-          // auto-start narration
-          setTimeout(() => play(), 100);
+          const startWhenFree = () => {
+            if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+              setTimeout(startWhenFree, 300);
+            } else {
+              play();
+            }
+          };
+          setTimeout(startWhenFree, 200);
           return 0;
         }
         return c - 1;
@@ -62,7 +91,7 @@ export function Narrator() {
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showPrompt]);
+  }, [showPrompt, voice]);
 
   const getPageText = () => {
     const main = document.getElementById("conteudo-principal");
