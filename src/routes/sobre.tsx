@@ -49,10 +49,12 @@ function Sobre() {
       <section className="mt-8 rounded-xl border-2 border-primary bg-secondary p-5">
         <h2 className="text-xl font-bold text-foreground">Recursos de acessibilidade ativos</h2>
         <ul className="mt-3 list-disc space-y-1 pl-5 text-base text-foreground">
-          <li>Botão de alto contraste (preto sobre amarelo).</li>
+          <li>Modo de alto contraste (texto amarelo sobre fundo preto).</li>
           <li>Ajuste de tamanho de fonte (de 85% a 150%).</li>
           <li>Atalho "Pular para o conteúdo" para leitores de tela.</li>
-          <li>Tradutor de Libras flutuante no canto inferior direito.</li>
+          <li>Tradutor de Libras flutuante no canto inferior direito (VLibras).</li>
+          <li>Narrador automático com aviso de 10 segundos antes de iniciar.</li>
+          <li>Glossário em linguagem simples com termos do material.</li>
         </ul>
       </section>
     </div>
