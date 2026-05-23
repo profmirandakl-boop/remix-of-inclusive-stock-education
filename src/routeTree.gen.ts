@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as Modulo2RouteImport } from './routes/modulo-2'
 import { Route as Modulo1RouteImport } from './routes/modulo-1'
+import { Route as GlossarioRouteImport } from './routes/glossario'
 import { Route as BibliotecaRouteImport } from './routes/biblioteca'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -30,6 +31,11 @@ const Modulo1Route = Modulo1RouteImport.update({
   path: '/modulo-1',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GlossarioRoute = GlossarioRouteImport.update({
+  id: '/glossario',
+  path: '/glossario',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BibliotecaRoute = BibliotecaRouteImport.update({
   id: '/biblioteca',
   path: '/biblioteca',
@@ -44,6 +50,7 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/glossario': typeof GlossarioRoute
   '/modulo-1': typeof Modulo1Route
   '/modulo-2': typeof Modulo2Route
   '/sobre': typeof SobreRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/glossario': typeof GlossarioRoute
   '/modulo-1': typeof Modulo1Route
   '/modulo-2': typeof Modulo2Route
   '/sobre': typeof SobreRoute
@@ -59,21 +67,36 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/biblioteca': typeof BibliotecaRoute
+  '/glossario': typeof GlossarioRoute
   '/modulo-1': typeof Modulo1Route
   '/modulo-2': typeof Modulo2Route
   '/sobre': typeof SobreRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/biblioteca' | '/modulo-1' | '/modulo-2' | '/sobre'
+  fullPaths:
+    | '/'
+    | '/biblioteca'
+    | '/glossario'
+    | '/modulo-1'
+    | '/modulo-2'
+    | '/sobre'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/biblioteca' | '/modulo-1' | '/modulo-2' | '/sobre'
-  id: '__root__' | '/' | '/biblioteca' | '/modulo-1' | '/modulo-2' | '/sobre'
+  to: '/' | '/biblioteca' | '/glossario' | '/modulo-1' | '/modulo-2' | '/sobre'
+  id:
+    | '__root__'
+    | '/'
+    | '/biblioteca'
+    | '/glossario'
+    | '/modulo-1'
+    | '/modulo-2'
+    | '/sobre'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BibliotecaRoute: typeof BibliotecaRoute
+  GlossarioRoute: typeof GlossarioRoute
   Modulo1Route: typeof Modulo1Route
   Modulo2Route: typeof Modulo2Route
   SobreRoute: typeof SobreRoute
@@ -102,6 +125,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Modulo1RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/glossario': {
+      id: '/glossario'
+      path: '/glossario'
+      fullPath: '/glossario'
+      preLoaderRoute: typeof GlossarioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/biblioteca': {
       id: '/biblioteca'
       path: '/biblioteca'
@@ -122,6 +152,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BibliotecaRoute: BibliotecaRoute,
+  GlossarioRoute: GlossarioRoute,
   Modulo1Route: Modulo1Route,
   Modulo2Route: Modulo2Route,
   SobreRoute: SobreRoute,
@@ -129,13 +160,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { HeartPulse, Activity, ShieldCheck } from "lucide-react";
 import ergonomiaImg from "@/assets/ergonomia.jpg";
+import { Breadcrumbs, PrevNext } from "@/components/Breadcrumbs";
 
 export const Route = createFileRoute("/modulo-2")({
   head: () => ({
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/modulo-2")({
 function Modulo2() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 md:px-6">
+      <Breadcrumbs items={[{ label: "Módulo 2" }]} />
       <header>
         <span className="rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent-foreground">
           Módulo 2
@@ -82,6 +84,11 @@ function Modulo2() {
           Solicite ajuda para cargas acima de 20 kg. Trabalhe em dupla sempre que possível.
         </p>
       </article>
+
+      <PrevNext
+        prev={{ to: "/modulo-1", label: "Módulo 1 — Fundamentos do Estoque" }}
+        next={{ to: "/biblioteca", label: "Biblioteca de Mídias" }}
+      />
     </div>
   );
 }
