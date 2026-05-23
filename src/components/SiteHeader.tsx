@@ -26,6 +26,7 @@ export function SiteHeader() {
     { to: "/modulo-1", label: "Módulo 1" },
     { to: "/modulo-2", label: "Módulo 2" },
     { to: "/biblioteca", label: "Biblioteca" },
+    { to: "/glossario", label: "Glossário" },
     { to: "/sobre", label: "Sobre" },
   ] as const;
 
