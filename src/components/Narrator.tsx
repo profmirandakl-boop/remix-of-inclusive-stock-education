@@ -88,17 +88,27 @@ export function Narrator() {
       window.speechSynthesis.cancel();
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
-  }, []);
+  const resolveVoice = () => {
+    if (voice) return voice;
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
+    const v = getPreferredPortugueseVoice(window.speechSynthesis.getVoices());
+    if (v) setVoice(v);
+    return v;
+  };
 
   // Speak helper for arbitrary text (used for the countdown announcement)
   const speak = (text: string) => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     const synth = window.speechSynthesis;
     const utter = new SpeechSynthesisUtterance(text);
-    if (voice) utter.voice = voice;
+    const v = resolveVoice();
+    if (v) utter.voice = v;
     utter.lang = "pt-BR";
-    utter.rate = 1;
+    utter.rate = 0.95;
     utter.pitch = 1;
+    synth.speak(utter);
+  };
+
     synth.speak(utter);
   };
 
