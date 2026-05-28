@@ -177,10 +177,12 @@ export function Narrator() {
     const text = getPageText();
     if (!text) return;
     const utter = new SpeechSynthesisUtterance(text);
-    if (voice) utter.voice = voice;
+    const v = resolveVoice();
+    if (v) utter.voice = v;
     utter.lang = "pt-BR";
-    utter.rate = 1;
+    utter.rate = 0.95;
     utter.pitch = 1;
+
     utter.onend = () => setStatus("idle");
     utter.onerror = () => setStatus("idle");
     utteranceRef.current = utter;
