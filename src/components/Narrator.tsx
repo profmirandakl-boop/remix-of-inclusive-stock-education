@@ -47,28 +47,27 @@ export function Narrator() {
     }
     const loadVoices = () => {
       const voices = window.speechSynthesis.getVoices();
-    const loadVoices = () => {
-      const voices = window.speechSynthesis.getVoices();
       const selected = getPreferredPortugueseVoice(voices);
       if (selected) {
         setVoice(selected);
         console.log("[Narrator] Voz selecionada:", selected.name, selected.lang);
       } else if (voices.length > 0) {
-        // Fallback: use any available voice but keep pt-BR lang
         setVoice(voices[0]);
         console.log("[Narrator] Fallback voz:", voices[0].name, voices[0].lang);
       }
     };
     loadVoices();
     window.speechSynthesis.onvoiceschanged = loadVoices;
-    const voiceRetry = window.setTimeout(loadVoices, 700);
-    const voiceRetry2 = window.setTimeout(loadVoices, 1500);
-    const voiceRetry3 = window.setTimeout(loadVoices, 3000);
+    const t1 = window.setTimeout(loadVoices, 700);
+    const t2 = window.setTimeout(loadVoices, 1500);
+    const t3 = window.setTimeout(loadVoices, 3000);
     const dismissed = sessionStorage.getItem("narrator-prompt-dismissed");
     if (!dismissed) setShowPrompt(true);
 
     return () => {
-      window.clearTimeout(voiceRetry);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
       window.speechSynthesis.cancel();
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
