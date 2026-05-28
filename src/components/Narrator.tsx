@@ -4,30 +4,47 @@ import { Volume2, Pause, Play, Square, X } from "lucide-react";
 type Status = "idle" | "playing" | "paused";
 
 const getPreferredPortugueseVoice = (voices: SpeechSynthesisVoice[]) => {
+  if (!voices || voices.length === 0) return null;
   const normalized = voices.map((voice) => ({
     voice,
-    lang: voice.lang?.toLowerCase() || "",
-    name: voice.name?.toLowerCase() || "",
+    lang: (voice.lang || "").toLowerCase().replace("_", "-"),
+    name: (voice.name || "").toLowerCase(),
   }));
 
-  // Prefer Brazilian Portuguese voices explicitly
-  const ptBr = normalized.filter(({ lang }) => lang === "pt-br");
+  const ptBr = normalized.filter(({ lang }) => lang === "pt-br" || lang.startsWith("pt-br"));
   const pt = normalized.filter(({ lang }) => lang.startsWith("pt"));
 
-  // Prefer Google voices, then Microsoft, then any other
-  const pick = (list: typeof normalized) =>
-    list.find(({ name }) => name.includes("google"))?.voice ||
-    list.find(({ name }) => name.includes("microsoft"))?.voice ||
-    list.find(({ name }) => name.includes("brasil"))?.voice ||
-    list.find(({ name }) => name.includes("luciana"))?.voice ||
-    list.find(({ name }) => name.includes("felipe"))?.voice ||
-    list.find(({ name }) => name.includes("joana"))?.voice ||
-    list.find(({ name }) => name.includes("maria"))?.voice ||
-    list[0]?.voice ||
-    null;
+  // Order of preference: known good natural Brazilian Portuguese voices
+  const preferredNames = [
+    "google português do brasil",
+    "google portugues do brasil",
+    "google português (brasil)",
+    "microsoft francisca",
+    "microsoft antonio",
+    "microsoft daniel",
+    "microsoft maria",
+    "luciana",
+    "felipe",
+    "joana",
+    "fernanda",
+    "ricardo",
+    "vitoria",
+    "vitória",
+    "google",
+    "microsoft",
+  ];
+
+  const pick = (list: typeof normalized) => {
+    for (const key of preferredNames) {
+      const found = list.find(({ name }) => name.includes(key));
+      if (found) return found.voice;
+    }
+    return list[0]?.voice || null;
+  };
 
   return pick(ptBr) || pick(pt) || null;
 };
+
 
 export function Narrator() {
   const [mounted, setMounted] = useState(false);
@@ -73,17 +90,27 @@ export function Narrator() {
     };
   }, []);
 
+  const resolveVoice = () => {
+    if (voice) return voice;
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
+    const v = getPreferredPortugueseVoice(window.speechSynthesis.getVoices());
+    if (v) setVoice(v);
+    return v;
+  };
+
   // Speak helper for arbitrary text (used for the countdown announcement)
   const speak = (text: string) => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     const synth = window.speechSynthesis;
     const utter = new SpeechSynthesisUtterance(text);
-    if (voice) utter.voice = voice;
+    const v = resolveVoice();
+    if (v) utter.voice = v;
     utter.lang = "pt-BR";
-    utter.rate = 1;
+    utter.rate = 0.95;
     utter.pitch = 1;
     synth.speak(utter);
   };
+
 
   // Countdown effect + narrate the warning message
   useEffect(() => {
@@ -150,10 +177,12 @@ export function Narrator() {
     const text = getPageText();
     if (!text) return;
     const utter = new SpeechSynthesisUtterance(text);
-    if (voice) utter.voice = voice;
+    const v = resolveVoice();
+    if (v) utter.voice = v;
     utter.lang = "pt-BR";
-    utter.rate = 1;
+    utter.rate = 0.95;
     utter.pitch = 1;
+
     utter.onend = () => setStatus("idle");
     utter.onerror = () => setStatus("idle");
     utteranceRef.current = utter;
