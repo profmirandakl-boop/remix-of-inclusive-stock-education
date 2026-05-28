@@ -18,6 +18,13 @@ const VLIBRAS_MARKUP =
   '<div vw-plugin-wrapper="true"><div class="vw-plugin-top-wrapper"></div></div>' +
   "</div>";
 
+function hasVisibleButton() {
+  const btn = document.querySelector('[vw-access-button]');
+  if (!btn) return false;
+  // The VLibras script injects child content into the access button when ready
+  return btn.children.length > 0 || btn.innerHTML.trim().length > 0;
+}
+
 function ensureVlibrasMarkup() {
   let wrapper = document.getElementById("vlibras-root");
   let rebuilt = false;
@@ -46,10 +53,10 @@ export function LibrasWidget() {
 
     ensureVlibrasMarkup();
 
-    const init = () => {
+    const init = (force = false) => {
       ensureVlibrasMarkup();
       if (!window.VLibras?.Widget) return false;
-      if (window.__vlibrasInstance) return true;
+      if (window.__vlibrasInstance && !force && hasVisibleButton()) return true;
       try {
         window.__vlibrasInstance = new window.VLibras.Widget(VLIBRAS_WIDGET_URL);
         return true;
@@ -59,30 +66,49 @@ export function LibrasWidget() {
       }
     };
 
-    if (init()) {
-      return;
-    }
+    const tryInit = () => init(false);
+    tryInit();
 
-    if (window.__vlibrasInitializing) {
-      return;
-    }
-
-    window.__vlibrasInitializing = true;
+    // Poll for up to ~30s to handle slow CDN, cached-script races, and
+    // cases where the widget script loaded but didn't render the button.
     let attempts = 0;
+    const maxAttempts = 60;
     const retryTimer = window.setInterval(() => {
       attempts += 1;
-      if (init() || attempts >= 20) {
+      ensureVlibrasMarkup();
+      if (window.VLibras?.Widget && !hasVisibleButton()) {
+        init(true);
+      } else if (hasVisibleButton()) {
+        window.clearInterval(retryTimer);
+        window.__vlibrasInitializing = false;
+      }
+      if (attempts >= maxAttempts) {
         window.clearInterval(retryTimer);
         window.__vlibrasInitializing = false;
       }
     }, 500);
 
+    window.__vlibrasInitializing = true;
+
+    // Re-check when tab becomes visible again
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") {
+        ensureVlibrasMarkup();
+        if (!hasVisibleButton()) init(true);
+      }
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
     const existing = document.getElementById(VLIBRAS_SCRIPT_ID) as HTMLScriptElement | null;
     if (existing) {
-      existing.addEventListener("load", init, { once: true });
+      const onLoad = () => init(true);
+      existing.addEventListener("load", onLoad, { once: true });
+      // Script tag exists but VLibras global may already be ready
+      if (window.VLibras?.Widget) init(true);
       return () => {
         window.clearInterval(retryTimer);
-        existing.removeEventListener("load", init);
+        existing.removeEventListener("load", onLoad);
+        document.removeEventListener("visibilitychange", onVisibility);
         window.__vlibrasInitializing = false;
       };
     }
@@ -91,7 +117,7 @@ export function LibrasWidget() {
     script.id = VLIBRAS_SCRIPT_ID;
     script.src = VLIBRAS_SCRIPT_URL;
     script.async = true;
-    script.onload = init;
+    script.onload = () => init(true);
     script.onerror = () => {
       window.clearInterval(retryTimer);
       window.__vlibrasInitializing = false;
@@ -101,6 +127,7 @@ export function LibrasWidget() {
 
     return () => {
       window.clearInterval(retryTimer);
+      document.removeEventListener("visibilitychange", onVisibility);
       script.onload = null;
       script.onerror = null;
       window.__vlibrasInitializing = false;
