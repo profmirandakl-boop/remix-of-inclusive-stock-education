@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 declare global {
   interface Window {
@@ -19,10 +19,11 @@ const VLIBRAS_MARKUP =
   "</div>";
 
 function hasVisibleButton() {
-  const btn = document.querySelector('[vw-access-button]');
+  const btn = document.querySelector("[vw-access-button]") as HTMLElement | null;
   if (!btn) return false;
-  // The VLibras script injects child content into the access button when ready
-  return btn.children.length > 0 || btn.innerHTML.trim().length > 0;
+  // On some loads the button is present in DOM but invisible (width/height 0)
+  const rect = btn.getBoundingClientRect();
+  return rect.width > 0 && rect.height > 0 && (btn.children.length > 0 || btn.innerHTML.trim().length > 0);
 }
 
 function ensureVlibrasMarkup() {
@@ -48,6 +49,8 @@ function ensureVlibrasMarkup() {
 }
 
 export function LibrasWidget() {
+  const observerRef = useRef<MutationObserver | null>(null);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -58,6 +61,15 @@ export function LibrasWidget() {
       if (!window.VLibras?.Widget) return false;
       if (window.__vlibrasInstance && !force && hasVisibleButton()) return true;
       try {
+        // Destroy previous instance if forcing re-init to avoid duplicates
+        if (force && window.__vlibrasInstance) {
+          try {
+            (window.__vlibrasInstance as { close?: () => void }).close?.();
+          } catch {
+            // ignore
+          }
+          window.__vlibrasInstance = undefined;
+        }
         window.__vlibrasInstance = new window.VLibras.Widget(VLIBRAS_WIDGET_URL);
         return true;
       } catch (e) {
@@ -90,6 +102,20 @@ export function LibrasWidget() {
 
     window.__vlibrasInitializing = true;
 
+    // Watch for DOM mutations that might indicate the widget injected content
+    const btn = document.querySelector("[vw-access-button]");
+    if (btn) {
+      const obs = new MutationObserver(() => {
+        if (hasVisibleButton()) {
+          window.clearInterval(retryTimer);
+          window.__vlibrasInitializing = false;
+          obs.disconnect();
+        }
+      });
+      obs.observe(btn, { childList: true, subtree: true, attributes: true });
+      observerRef.current = obs;
+    }
+
     // Re-check when tab becomes visible again
     const onVisibility = () => {
       if (document.visibilityState === "visible") {
@@ -109,6 +135,7 @@ export function LibrasWidget() {
         window.clearInterval(retryTimer);
         existing.removeEventListener("load", onLoad);
         document.removeEventListener("visibilitychange", onVisibility);
+        observerRef.current?.disconnect();
         window.__vlibrasInitializing = false;
       };
     }
@@ -128,6 +155,7 @@ export function LibrasWidget() {
     return () => {
       window.clearInterval(retryTimer);
       document.removeEventListener("visibilitychange", onVisibility);
+      observerRef.current?.disconnect();
       script.onload = null;
       script.onerror = null;
       window.__vlibrasInitializing = false;

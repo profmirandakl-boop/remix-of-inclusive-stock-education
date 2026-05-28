@@ -10,14 +10,23 @@ const getPreferredPortugueseVoice = (voices: SpeechSynthesisVoice[]) => {
     name: voice.name?.toLowerCase() || "",
   }));
 
-  return (
-    normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("google"))?.voice ||
-    normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("brasil"))?.voice ||
-    normalized.find(({ lang }) => lang === "pt-br")?.voice ||
-    normalized.find(({ lang }) => lang.startsWith("pt-"))?.voice ||
-    normalized.find(({ lang }) => lang.startsWith("pt"))?.voice ||
-    null
-  );
+  // Prefer Brazilian Portuguese voices explicitly
+  const ptBr = normalized.filter(({ lang }) => lang === "pt-br");
+  const pt = normalized.filter(({ lang }) => lang.startsWith("pt"));
+
+  // Prefer Google voices, then Microsoft, then any other
+  const pick = (list: typeof normalized) =>
+    list.find(({ name }) => name.includes("google"))?.voice ||
+    list.find(({ name }) => name.includes("microsoft"))?.voice ||
+    list.find(({ name }) => name.includes("brasil"))?.voice ||
+    list.find(({ name }) => name.includes("luciana"))?.voice ||
+    list.find(({ name }) => name.includes("felipe"))?.voice ||
+    list.find(({ name }) => name.includes("joana"))?.voice ||
+    list.find(({ name }) => name.includes("maria"))?.voice ||
+    list[0]?.voice ||
+    null;
+
+  return pick(ptBr) || pick(pt) || null;
 };
 
 export function Narrator() {
@@ -38,18 +47,27 @@ export function Narrator() {
     }
     const loadVoices = () => {
       const voices = window.speechSynthesis.getVoices();
-      setVoice(getPreferredPortugueseVoice(voices));
+      const selected = getPreferredPortugueseVoice(voices);
+      if (selected) {
+        setVoice(selected);
+        console.log("[Narrator] Voz selecionada:", selected.name, selected.lang);
+      } else if (voices.length > 0) {
+        setVoice(voices[0]);
+        console.log("[Narrator] Fallback voz:", voices[0].name, voices[0].lang);
+      }
     };
     loadVoices();
     window.speechSynthesis.onvoiceschanged = loadVoices;
-    const voiceRetry = window.setTimeout(loadVoices, 700);
-
-    // Show prompt once per session
+    const t1 = window.setTimeout(loadVoices, 700);
+    const t2 = window.setTimeout(loadVoices, 1500);
+    const t3 = window.setTimeout(loadVoices, 3000);
     const dismissed = sessionStorage.getItem("narrator-prompt-dismissed");
     if (!dismissed) setShowPrompt(true);
 
     return () => {
-      window.clearTimeout(voiceRetry);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
       window.speechSynthesis.cancel();
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
