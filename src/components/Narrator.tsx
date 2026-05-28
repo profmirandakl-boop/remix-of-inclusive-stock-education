@@ -88,6 +88,8 @@ export function Narrator() {
       window.speechSynthesis.cancel();
       if (timerRef.current) window.clearInterval(timerRef.current);
     };
+  }, []);
+
   const resolveVoice = () => {
     if (voice) return voice;
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return null;
@@ -109,8 +111,6 @@ export function Narrator() {
     synth.speak(utter);
   };
 
-    synth.speak(utter);
-  };
 
   // Countdown effect + narrate the warning message
   useEffect(() => {
