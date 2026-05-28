@@ -10,14 +10,23 @@ const getPreferredPortugueseVoice = (voices: SpeechSynthesisVoice[]) => {
     name: voice.name?.toLowerCase() || "",
   }));
 
-  return (
-    normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("google"))?.voice ||
-    normalized.find(({ lang, name }) => lang === "pt-br" && name.includes("brasil"))?.voice ||
-    normalized.find(({ lang }) => lang === "pt-br")?.voice ||
-    normalized.find(({ lang }) => lang.startsWith("pt-"))?.voice ||
-    normalized.find(({ lang }) => lang.startsWith("pt"))?.voice ||
-    null
-  );
+  // Prefer Brazilian Portuguese voices explicitly
+  const ptBr = normalized.filter(({ lang }) => lang === "pt-br");
+  const pt = normalized.filter(({ lang }) => lang.startsWith("pt"));
+
+  // Prefer Google voices, then Microsoft, then any other
+  const pick = (list: typeof normalized) =>
+    list.find(({ name }) => name.includes("google"))?.voice ||
+    list.find(({ name }) => name.includes("microsoft"))?.voice ||
+    list.find(({ name }) => name.includes("brasil"))?.voice ||
+    list.find(({ name }) => name.includes("luciana"))?.voice ||
+    list.find(({ name }) => name.includes("felipe"))?.voice ||
+    list.find(({ name }) => name.includes("joana"))?.voice ||
+    list.find(({ name }) => name.includes("maria"))?.voice ||
+    list[0]?.voice ||
+    null;
+
+  return pick(ptBr) || pick(pt) || null;
 };
 
 export function Narrator() {
