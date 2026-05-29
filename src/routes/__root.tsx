@@ -108,15 +108,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <div
-          id="vlibras-root"
-          dangerouslySetInnerHTML={{
-            __html:
-              '<div vw="true" class="enabled"><div vw-access-button="true" class="active"></div><div vw-plugin-wrapper="true"><div class="vw-plugin-top-wrapper"></div></div></div>',
-          }}
-        />
         {children}
-        <script id="vlibras-script" src="https://vlibras.gov.br/app/vlibras-plugin.js" async />
         <Scripts />
       </body>
     </html>
