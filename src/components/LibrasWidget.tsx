@@ -107,5 +107,20 @@ export function LibrasWidget() {
     };
   }, []);
 
-  return null;
+  return (
+    <div id="vlibras-root">
+      <div {...{ vw: "true" }} className="enabled">
+        <div
+          {...{ "vw-access-button": "true" }}
+          className="active"
+          role="button"
+          tabIndex={0}
+          aria-label="Abrir tradutor de Libras VLibras"
+        />
+        <div {...{ "vw-plugin-wrapper": "true" }}>
+          <div className="vw-plugin-top-wrapper" />
+        </div>
+      </div>
+    </div>
+  );
 }
