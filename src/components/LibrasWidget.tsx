@@ -11,12 +11,6 @@ const VLIBRAS_SCRIPT_ID = "vlibras-script";
 const VLIBRAS_SCRIPT_URL = "https://vlibras.gov.br/app/vlibras-plugin.js";
 const VLIBRAS_WIDGET_URL = "https://vlibras.gov.br/app";
 
-const VLIBRAS_MARKUP =
-  '<div vw="true" class="enabled">' +
-  '<div vw-access-button="true" class="active"></div>' +
-  '<div vw-plugin-wrapper="true"><div class="vw-plugin-top-wrapper"></div></div>' +
-  "</div>";
-
 export function LibrasWidget() {
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -59,5 +53,14 @@ export function LibrasWidget() {
     };
   }, []);
 
-  return <div id="vlibras-root" dangerouslySetInnerHTML={{ __html: VLIBRAS_MARKUP }} />;
+  return (
+    <div id="vlibras-root">
+      <div vw="true" className="enabled">
+        <div vw-access-button="true" className="active" />
+        <div vw-plugin-wrapper="true">
+          <div className="vw-plugin-top-wrapper" />
+        </div>
+      </div>
+    </div>
+  );
 }
