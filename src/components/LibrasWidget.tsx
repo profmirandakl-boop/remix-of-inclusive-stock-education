@@ -55,9 +55,9 @@ export function LibrasWidget() {
 
   return (
     <div id="vlibras-root">
-      <div vw="true" className="enabled">
-        <div vw-access-button="true" className="active" />
-        <div vw-plugin-wrapper="true">
+      <div {...{ vw: "true" }} className="enabled">
+        <div {...{ "vw-access-button": "true" }} className="active" />
+        <div {...{ "vw-plugin-wrapper": "true" }}>
           <div className="vw-plugin-top-wrapper" />
         </div>
       </div>
