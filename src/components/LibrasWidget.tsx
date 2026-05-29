@@ -11,17 +11,33 @@ const VLIBRAS_SCRIPT_ID = "vlibras-script";
 const VLIBRAS_SCRIPT_URL = "https://vlibras.gov.br/app/vlibras-plugin.js";
 const VLIBRAS_WIDGET_URL = "https://vlibras.gov.br/app";
 
-function ensureVlibrasMarkup() {
-  if (document.getElementById("vlibras-root")) return;
+function hasVisibleVlibrasButton() {
+  const button = document.querySelector("[vw-access-button]") as HTMLElement | null;
+  if (!button) return false;
+  const rect = button.getBoundingClientRect();
+  const style = window.getComputedStyle(button);
+  return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+}
 
-  const root = document.createElement("div");
-  root.id = "vlibras-root";
+function ensureVlibrasMarkup() {
+  let root = document.getElementById("vlibras-root");
+
+  if (!root) {
+    root = document.createElement("div");
+    root.id = "vlibras-root";
+    document.body.appendChild(root);
+  }
+
+  if (root.querySelector("[vw]") && root.querySelector("[vw-access-button]") && root.querySelector("[vw-plugin-wrapper]")) {
+    return;
+  }
+
   root.innerHTML =
     '<div vw="true" class="enabled">' +
     '<div vw-access-button="true" class="active"></div>' +
     '<div vw-plugin-wrapper="true"><div class="vw-plugin-top-wrapper"></div></div>' +
     "</div>";
-  document.body.appendChild(root);
+  window.__vlibrasInstance = undefined;
 }
 
 export function LibrasWidget() {
@@ -33,8 +49,9 @@ export function LibrasWidget() {
     const init = () => {
       ensureVlibrasMarkup();
       if (!window.VLibras?.Widget) return false;
-      if (window.__vlibrasInstance) return true;
+      if (window.__vlibrasInstance && hasVisibleVlibrasButton()) return true;
       try {
+        window.__vlibrasInstance = undefined;
         window.__vlibrasInstance = new window.VLibras.Widget(VLIBRAS_WIDGET_URL);
         return true;
       } catch (e) {
@@ -43,12 +60,30 @@ export function LibrasWidget() {
       }
     };
 
+    let attempts = 0;
+    const retryTimer = window.setInterval(() => {
+      attempts += 1;
+      const ok = init();
+      if ((ok && hasVisibleVlibrasButton()) || attempts >= 50) {
+        window.clearInterval(retryTimer);
+      }
+    }, 500);
+
+    const onPageShow = () => {
+      if (!hasVisibleVlibrasButton()) init();
+    };
+    window.addEventListener("pageshow", onPageShow);
+    document.addEventListener("visibilitychange", onPageShow);
+
     const existing = document.getElementById(VLIBRAS_SCRIPT_ID) as HTMLScriptElement | null;
     if (existing) {
       const onLoad = () => init();
       existing.addEventListener("load", onLoad);
       init();
       return () => {
+        window.clearInterval(retryTimer);
+        window.removeEventListener("pageshow", onPageShow);
+        document.removeEventListener("visibilitychange", onPageShow);
         existing.removeEventListener("load", onLoad);
       };
     }
@@ -64,10 +99,28 @@ export function LibrasWidget() {
     document.body.appendChild(script);
 
     return () => {
+      window.clearInterval(retryTimer);
+      window.removeEventListener("pageshow", onPageShow);
+      document.removeEventListener("visibilitychange", onPageShow);
       script.onload = null;
       script.onerror = null;
     };
   }, []);
 
-  return null;
+  return (
+    <div id="vlibras-root">
+      <div {...{ vw: "true" }} className="enabled">
+        <div
+          {...{ "vw-access-button": "true" }}
+          className="active"
+          role="button"
+          tabIndex={0}
+          aria-label="Abrir tradutor de Libras VLibras"
+        />
+        <div {...{ "vw-plugin-wrapper": "true" }}>
+          <div className="vw-plugin-top-wrapper" />
+        </div>
+      </div>
+    </div>
+  );
 }
