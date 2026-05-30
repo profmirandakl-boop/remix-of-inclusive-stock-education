@@ -77,16 +77,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "EstoqueAtivo — Educação Física Inclusiva" },
-      { name: "description", content: "Material didático digital sobre gestão de estoques esportivos, ergonomia e formação técnica inclusiva." },
+      {
+        name: "description",
+        content:
+          "Material didático digital sobre gestão de estoques esportivos, ergonomia e formação técnica inclusiva.",
+      },
       { name: "author", content: "EstoqueAtivo" },
       { property: "og:title", content: "EstoqueAtivo — Educação Física Inclusiva" },
-      { property: "og:description", content: "Material didático digital sobre gestão de estoques esportivos, ergonomia e formação técnica inclusiva." },
+      {
+        property: "og:description",
+        content:
+          "Material didático digital sobre gestão de estoques esportivos, ergonomia e formação técnica inclusiva.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "EstoqueAtivo — Educação Física Inclusiva" },
-      { name: "twitter:description", content: "Material didático digital sobre gestão de estoques esportivos, ergonomia e formação técnica inclusiva." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/60d97a74-0174-4983-8ad9-252247bb56d9/id-preview-fbddf120--bed768c3-43ca-4c62-a21f-82a685560155.lovable.app-1779190713003.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/60d97a74-0174-4983-8ad9-252247bb56d9/id-preview-fbddf120--bed768c3-43ca-4c62-a21f-82a685560155.lovable.app-1779190713003.png" },
+      {
+        name: "twitter:description",
+        content:
+          "Material didático digital sobre gestão de estoques esportivos, ergonomia e formação técnica inclusiva.",
+      },
+      {
+        property: "og:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/60d97a74-0174-4983-8ad9-252247bb56d9/id-preview-fbddf120--bed768c3-43ca-4c62-a21f-82a685560155.lovable.app-1779190713003.png",
+      },
+      {
+        name: "twitter:image",
+        content:
+          "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/60d97a74-0174-4983-8ad9-252247bb56d9/id-preview-fbddf120--bed768c3-43ca-4c62-a21f-82a685560155.lovable.app-1779190713003.png",
+      },
     ],
     links: [
       {
@@ -109,6 +129,20 @@ function RootShell({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <div id="vlibras-root" {...{ vw: "" }} className="enabled">
+          <div {...{ "vw-access-button": "" }} className="active" />
+          <div {...{ "vw-plugin-wrapper": "" }}>
+            <div className="vw-plugin-top-wrapper" />
+          </div>
+        </div>
+        <script id="vlibras-script" src="https://vlibras.gov.br/app/vlibras-plugin.js" />
+        <script
+          id="vlibras-init"
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){function init(){if(window.VLibras&&window.VLibras.Widget&&!window.__vlibrasInstance){window.__vlibrasInstance=new window.VLibras.Widget('https://vlibras.gov.br/app');}}init();window.addEventListener('pageshow',init);document.addEventListener('visibilitychange',init);})();",
+          }}
+        />
         <Scripts />
       </body>
     </html>
