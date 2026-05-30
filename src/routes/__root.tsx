@@ -109,6 +109,20 @@ function RootShell({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
+        <div id="vlibras-root" {...{ vw: "" }} className="enabled">
+          <div {...{ "vw-access-button": "" }} className="active" />
+          <div {...{ "vw-plugin-wrapper": "" }}>
+            <div className="vw-plugin-top-wrapper" />
+          </div>
+        </div>
+        <script id="vlibras-script" src="https://vlibras.gov.br/app/vlibras-plugin.js" />
+        <script
+          id="vlibras-init"
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){function init(){if(window.VLibras&&window.VLibras.Widget&&!window.__vlibrasInstance){window.__vlibrasInstance=new window.VLibras.Widget('https://vlibras.gov.br/app');}}init();window.addEventListener('pageshow',init);document.addEventListener('visibilitychange',init);})();",
+          }}
+        />
         <Scripts />
       </body>
     </html>
