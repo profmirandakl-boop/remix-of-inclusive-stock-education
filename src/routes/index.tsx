@@ -1,164 +1,256 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Boxes, Layers, HeartPulse, PlayCircle, Accessibility, Languages, Eye } from "lucide-react";
-import { ArticleCard } from "@/components/ArticleCard";
-import heroImg from "@/assets/hero-inclusive.jpg";
-import inventarioImg from "@/assets/inventario.jpg";
-import classificacaoImg from "@/assets/classificacao.jpg";
-import ergonomiaImg from "@/assets/ergonomia.jpg";
+import { createFileRoute } from "@tanstack/react-router";
+import { QRCodeSVG } from "qrcode.react";
+import { Search, ArrowRight, ExternalLink, BookCopy } from "lucide-react";
+import { AccessibilityBar } from "@/components/educaadmin/AccessibilityBar";
+import { BrandEmblem, AxisLegend } from "@/components/educaadmin/BrandEmblem";
+import { PostureIllustrations } from "@/components/educaadmin/PostureIllustrations";
+
+const ACTIVE_BREAK_URL =
+  "https://www.youtube.com/results?search_query=ginastica+laboral+pausa+ativa+celular";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "EstoqueAtivo — Portal de gestão de estoques esportivos acessível" },
-      { name: "description", content: "Estude gestão de estoques esportivos com linguagem simples, alto contraste, Libras e infográficos acessíveis." },
+      { title: "EducaAdmin — Gestão Integral: Administração, Saúde & Acessibilidade" },
+      {
+        name: "description",
+        content:
+          "Objeto de aprendizagem acessível para o Ensino Médio Técnico: gestão de estoque (Curva ABC, FIFO, LIFO), ergonomia e saúde postural, com Libras, narrador e alto contraste.",
+      },
     ],
   }),
-  component: Index,
+  component: EducaAdmin,
 });
 
-function Index() {
+function EducaAdmin() {
   return (
-    <>
-      <section className="border-b-2 border-border bg-secondary">
-        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-12 md:grid-cols-2 md:px-6 md:py-20">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent-foreground">
-              <Accessibility className="h-4 w-4" aria-hidden="true" /> Material Didático Digital
-            </span>
-            <h1 className="mt-4 text-4xl font-bold leading-tight text-foreground md:text-5xl">
-              Gestão de estoques esportivos, acessível para todos.
-            </h1>
-            <p className="mt-4 text-lg text-muted-foreground">
-              Artigos, infográficos e vídeos sobre giro de estoque, classificação de materiais e ergonomia no almoxarifado.
-              Conteúdo em linguagem simples, com alto contraste, ajuste de fonte e tradução em Libras.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                to="/modulo-1"
-                className="inline-flex min-h-12 items-center rounded-md bg-primary px-5 py-3 text-base font-semibold text-primary-foreground hover:bg-primary/90"
-              >
-                Começar pelo Módulo 1
-              </Link>
-              <Link
-                to="/biblioteca"
-                className="inline-flex min-h-12 items-center rounded-md border-2 border-primary px-5 py-3 text-base font-semibold text-primary hover:bg-primary hover:text-primary-foreground"
-              >
-                Ver biblioteca de vídeos
-              </Link>
+    <div className="flex min-h-dvh flex-col bg-background text-foreground">
+      {/* ====================== HEADER ====================== */}
+      <header className="bg-navy text-navy-foreground shadow-lg">
+        <a
+          href="#conteudo-principal"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-teal focus:px-4 focus:py-2 focus:text-teal-foreground"
+        >
+          Pular para o conteúdo
+        </a>
+        <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 md:px-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* Branding */}
+            <div className="flex items-center gap-4">
+              <BrandEmblem />
+              <div className="leading-tight">
+                <p className="text-2xl font-extrabold tracking-tight sm:text-3xl">EducaAdmin</p>
+                <p className="mt-1 max-w-xs text-[11px] font-semibold uppercase tracking-wide text-teal sm:text-xs">
+                  Gestão Integral: Administração, Saúde &amp; Acessibilidade
+                </p>
+                <div className="mt-2 hidden md:block">
+                  <AxisLegend />
+                </div>
+              </div>
             </div>
-            <ul className="mt-6 flex flex-wrap gap-4 text-sm text-foreground">
-              <li className="inline-flex items-center gap-2"><Eye className="h-4 w-4 text-accent" aria-hidden="true" /> Alto contraste</li>
-              <li className="inline-flex items-center gap-2"><Languages className="h-4 w-4 text-accent" aria-hidden="true" /> Tradução em Libras</li>
-              <li className="inline-flex items-center gap-2"><Accessibility className="h-4 w-4 text-accent" aria-hidden="true" /> Leitor de tela</li>
-            </ul>
-          </div>
-          <div className="overflow-hidden rounded-2xl border-4 border-primary">
-            <img
-              src={heroImg}
-              alt="Duas pessoas organizam um estoque de materiais esportivos: uma em pé e outra em cadeira de rodas, ambas olhando para frente."
-              width={1536}
-              height={1024}
-              className="h-full w-full object-cover"
-            />
-          </div>
-        </div>
-      </section>
 
-      <section aria-labelledby="modulos-titulo" className="mx-auto max-w-7xl px-4 py-16 md:px-6">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h2 id="modulos-titulo" className="text-3xl font-bold text-foreground">
-              Conteúdo organizado em blocos
-            </h2>
-            <p className="mt-2 text-muted-foreground">
-              Diagramação linear, sem tabelas complexas. Leitores de tela percorrem de cima para baixo.
-            </p>
-          </div>
-        </div>
+            {/* Search */}
+            <form
+              role="search"
+              onSubmit={(e) => e.preventDefault()}
+              className="order-3 w-full md:order-2 md:w-auto md:flex-1 md:max-w-md"
+            >
+              <label htmlFor="busca" className="sr-only">
+                O que você quer aprender hoje?
+              </label>
+              <div className="flex items-center gap-2 rounded-full border-2 border-navy-foreground/30 bg-navy-foreground px-4 py-2 text-foreground focus-within:border-teal">
+                <Search className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                <input
+                  id="busca"
+                  type="search"
+                  placeholder="O que você quer aprender hoje?"
+                  className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                />
+              </div>
+            </form>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <ArticleCard
-            to="/modulo-1"
-            tag="Módulo 1"
-            title="Giro de estoque esportivo"
-            description="Entenda como medir o giro de bolas, coletes e aparelhos e por que ele importa na escola."
-            image={inventarioImg}
-            imageAlt="Almoxarifado esportivo organizado com prateleiras etiquetadas contendo bolas coloridas, cones e cordas."
-            icon={Boxes}
-          />
-          <ArticleCard
-            to="/modulo-1"
-            tag="Módulo 1"
-            title="Classificação de materiais"
-            description="Critérios para separar bolas, coletes e aparelhos de ginástica em categorias claras."
-            image={classificacaoImg}
-            imageAlt="Diagrama com ícones agrupando categorias de materiais esportivos: bolas, coletes e aparelhos."
-            icon={Layers}
-          />
-          <ArticleCard
-            to="/modulo-2"
-            tag="Módulo 2"
-            title="Organização física do almoxarifado"
-            description="Setas e linhas de força indicam a postura correta ao levantar caixas pesadas de equipamentos."
-            image={ergonomiaImg}
-            imageAlt="Ilustração técnica de pessoa erguendo uma caixa, com setas laranja indicando a direção correta do movimento da coluna."
-            icon={HeartPulse}
-          />
-          <ArticleCard
-            to="/modulo-2"
-            tag="Módulo 2"
-            title="Ergonomia e saúde do trabalhador"
-            description="Como prevenir lesões na manipulação de cargas no dia a dia do professor."
-            image={ergonomiaImg}
-            imageAlt="Infográfico mostrando postura correta da coluna ao levantar peso, com setas direcionais."
-            icon={HeartPulse}
-          />
-          <ArticleCard
-            to="/biblioteca"
-            tag="Biblioteca"
-            title="Tutoriais em vídeo"
-            description="Vídeos curtos com legenda sincronizada e janela de intérprete de Libras."
-            image={inventarioImg}
-            imageAlt="Prateleiras de almoxarifado com materiais esportivos organizados por categoria."
-            icon={PlayCircle}
-          />
-          <ArticleCard
-            to="/sobre"
-            tag="Sobre"
-            title="Princípio da EPT"
-            description="Como o portal integra Administração e Educação Física na formação técnica."
-            image={classificacaoImg}
-            imageAlt="Composição de ícones representando integração entre administração e educação física."
-            icon={Accessibility}
-          />
-        </div>
-      </section>
+            {/* Accessibility panel */}
+            <div className="order-2 md:order-3">
+              <AccessibilityBar />
+            </div>
+          </div>
 
-      <section className="bg-primary text-primary-foreground">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-14 md:grid-cols-3 md:px-6">
-          <div>
-            <Eye className="h-8 w-8 text-accent" aria-hidden="true" />
-            <h3 className="mt-3 text-xl font-bold">Para estudantes cegos</h3>
-            <p className="mt-2 text-base opacity-90">
-              Todas as imagens possuem texto alternativo descritivo. Tipografia sem serifa (Verdana) e ordem direta de leitura.
-            </p>
-          </div>
-          <div>
-            <Languages className="h-8 w-8 text-accent" aria-hidden="true" />
-            <h3 className="mt-3 text-xl font-bold">Para estudantes surdos</h3>
-            <p className="mt-2 text-base opacity-90">
-              Linguagem simples (Plain Language) facilita tradução automática em Libras. Vídeos com legenda sincronizada.
-            </p>
-          </div>
-          <div>
-            <Accessibility className="h-8 w-8 text-accent" aria-hidden="true" />
-            <h3 className="mt-3 text-xl font-bold">Formação integral (EPT)</h3>
-            <p className="mt-2 text-base opacity-90">
-              Une gestão administrativa, cultura corporal e ergonomia em um único material didático digital.
-            </p>
+          <div className="md:hidden">
+            <AxisLegend />
           </div>
         </div>
-      </section>
-    </>
+      </header>
+
+      {/* ====================== MAIN ====================== */}
+      <main id="conteudo-principal" className="flex-1">
+        <div className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-10">
+          {/* Video */}
+          <section aria-labelledby="video-titulo" className="mb-10">
+            <h1 id="video-titulo" className="mb-4 text-2xl font-bold sm:text-3xl">
+              Introdução à Gestão de Estoque Didático
+            </h1>
+            <div className="overflow-hidden rounded-2xl border-4 border-navy shadow-xl">
+              <div className="aspect-video w-full bg-navy-deep">
+                <iframe
+                  src="https://www.youtube.com/embed/H5O-BHmkUh4"
+                  title="Vídeo: Controle de Estoque — introdução à gestão de estoque didático"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  loading="lazy"
+                  className="h-full w-full"
+                />
+              </div>
+            </div>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Vídeo: <em>“Controle de Estoque”</em>. Fonte: Canal Blog Abri Minha Empresa / YouTube.
+              URL:{" "}
+              <a
+                href="http://www.youtube.com/watch?v=H5O-BHmkUh4"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-navy underline underline-offset-2 hover:text-teal"
+              >
+                http://www.youtube.com/watch?v=H5O-BHmkUh4
+              </a>
+            </p>
+          </section>
+
+          {/* Content + QR */}
+          <div className="grid gap-8 lg:grid-cols-3">
+            {/* Two text columns */}
+            <div className="grid gap-8 sm:grid-cols-2 lg:col-span-2">
+              {/* Column 1 */}
+              <section
+                aria-labelledby="col-admin"
+                className="rounded-2xl border-2 border-border bg-card p-5"
+              >
+                <h2 id="col-admin" className="flex items-center gap-2 text-xl font-bold text-navy">
+                  <ArrowRight className="h-5 w-5 text-teal" aria-hidden="true" /> Admin/Estoque
+                </h2>
+                <p className="mt-3 text-base leading-relaxed">
+                  A gestão eficiente começa pela classificação dos itens. A{" "}
+                  <strong>Curva ABC</strong> separa os materiais por relevância: a classe A reúne os
+                  poucos itens de maior valor, enquanto C concentra os de menor impacto financeiro.
+                </p>
+                <p className="mt-3 text-base leading-relaxed">
+                  Para a movimentação dos materiais, dois métodos guiam a saída do estoque. No{" "}
+                  <strong>FIFO</strong> (primeiro a entrar, primeiro a sair), os itens mais antigos
+                  saem primeiro — ideal para produtos perecíveis. Já o <strong>LIFO</strong> (último
+                  a entrar, primeiro a sair) prioriza os itens mais recentes.
+                </p>
+                <p className="mt-4 text-base leading-relaxed">
+                  Aprofunde-se nos conceitos:{" "}
+                  <a
+                    href="http://www.youtube.com/watch?v=H5O-BHmkUh4"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-navy underline underline-offset-2 hover:text-teal"
+                  >
+                    controle de estoque na prática
+                  </a>
+                  .
+                </p>
+              </section>
+
+              {/* Column 2 */}
+              <section
+                aria-labelledby="col-saude"
+                className="rounded-2xl border-2 border-border bg-card p-5"
+              >
+                <h2 id="col-saude" className="flex items-center gap-2 text-xl font-bold text-navy">
+                  <ArrowRight className="h-5 w-5 text-brand-green" aria-hidden="true" /> Saúde/Ed.
+                  Física
+                </h2>
+                <p className="mt-3 text-base leading-relaxed">
+                  Organizar o almoxarifado também é cuidar do corpo. A <strong>Ergonomia</strong>{" "}
+                  adapta o posto de trabalho à pessoa, reduzindo esforços ao levantar caixas e ao
+                  permanecer sentado por longos períodos.
+                </p>
+                <p className="mt-3 text-base leading-relaxed">
+                  A <strong>Saúde Postural</strong> previne dores e lesões. Manter a coluna ereta,
+                  os pés apoiados e fazer pausas ativas combate os efeitos do sedentarismo no dia a
+                  dia técnico.
+                </p>
+                <div className="mt-4">
+                  <h3 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">
+                    Postura e alongamentos na cadeira
+                  </h3>
+                  <PostureIllustrations />
+                </div>
+              </section>
+            </div>
+
+            {/* QR Code */}
+            <section
+              aria-labelledby="qr-titulo"
+              className="flex flex-col items-center justify-start gap-4 rounded-2xl border-2 border-navy bg-navy p-6 text-center text-navy-foreground"
+            >
+              <h2 id="qr-titulo" className="text-lg font-bold uppercase tracking-wide text-teal">
+                Leve para o celular
+              </h2>
+              <a
+                href={ACTIVE_BREAK_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir rotinas de pausas ativas no celular"
+                className="rounded-xl bg-navy-foreground p-4 shadow-lg focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-teal"
+              >
+                <QRCodeSVG
+                  value={ACTIVE_BREAK_URL}
+                  size={168}
+                  level="M"
+                  bgColor="#ffffff"
+                  fgColor="#15243f"
+                  className="hc-dim h-auto w-full max-w-[168px]"
+                />
+              </a>
+              <p className="text-base font-bold leading-snug">
+                ROTINAS DE PAUSAS ATIVAS NO CELULAR
+              </p>
+              <p className="text-sm text-navy-foreground/80">
+                Escaneie com a câmera do celular e leve os exercícios de pausa ativa para qualquer
+                lugar.
+              </p>
+            </section>
+          </div>
+        </div>
+      </main>
+
+      {/* ====================== FOOTER ====================== */}
+      <footer className="bg-navy-deep text-navy-foreground">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 py-6 text-center md:flex-row md:px-6 md:text-left">
+          <p className="max-w-md text-xs leading-relaxed text-navy-foreground/85">
+            © 2026 — Desenvolvido por: <strong>Matheus Miranda de Oliveira</strong> | Material
+            Didático Digital: Gestão de Estoque Inclusiva e Saúde Postural
+          </p>
+
+          <div className="flex items-center gap-2 text-xs">
+            <span
+              aria-hidden="true"
+              className="inline-flex items-center gap-1 rounded border-2 border-navy-foreground/50 px-2 py-1 font-bold tracking-wider"
+            >
+              CC BY 4.0
+            </span>
+            <a
+              href="https://creativecommons.org/licenses/by/4.0/deed.pt-br"
+              target="_blank"
+              rel="noopener noreferrer license"
+              className="underline underline-offset-2 hover:text-teal"
+            >
+              Este material é licenciado sob CC BY 4.0
+            </a>
+          </div>
+
+          <a
+            href="#"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-teal underline underline-offset-2 hover:text-navy-foreground"
+          >
+            <BookCopy className="h-4 w-4" aria-hidden="true" />
+            Catalogação Oficial no PROEDU
+            <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+          </a>
+        </div>
+      </footer>
+    </div>
   );
 }
