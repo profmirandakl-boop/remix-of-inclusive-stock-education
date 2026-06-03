@@ -115,6 +115,17 @@
   --border: oklch(0.98 0.22 100);
   --input: oklch(0.98 0.22 100);
   --ring: oklch(0.98 0.22 100);
+  --navy: oklch(0 0 0);
+  --navy-deep: oklch(0 0 0);
+  --navy-foreground: oklch(0.98 0.22 100);
+  --teal: oklch(0.98 0.22 100);
+  --teal-foreground: oklch(0 0 0);
+  --brand-green: oklch(0.98 0.22 100);
+}
+
+/* In high contrast, force the brand emblem and decorative imagery to stay visible */
+.high-contrast img.hc-dim {
+  filter: brightness(0) saturate(100%) invert(92%) sepia(82%) saturate(2000%) hue-rotate(8deg) brightness(108%) contrast(105%);
 }
 
 html {
