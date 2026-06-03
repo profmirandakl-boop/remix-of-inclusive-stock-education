@@ -154,15 +154,7 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="flex min-h-dvh flex-col bg-background text-foreground">
-        <SiteHeader />
-        <main id="conteudo-principal" className="flex-1">
-          <Outlet />
-        </main>
-        <SiteFooter />
-        <LibrasWidget />
-        <Narrator />
-      </div>
+      <Outlet />
     </QueryClientProvider>
   );
 }
